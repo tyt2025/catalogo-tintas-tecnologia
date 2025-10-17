@@ -13,6 +13,33 @@ const App = () => {
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4eGlmd3B3YXJicnJvZHR6eXFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjc5OTAsImV4cCI6MjA3MzgwMzk5MH0.tMgoakEvw8wsvrWZpRClZo3BpiUIJ4OQrQsiM4BGM54';
   const WHATSAPP = '573102605693';
 
+  // Diccionario de traducción de categorías
+  const categoryTranslations = {
+    'Accessories': 'Accesorios',
+    'Audio': 'Audio',
+    'CCTV': 'CCTV',
+    'Computer Components': 'Componentes de Computador',
+    'Computers': 'Computadores',
+    'Gamer': 'Gamer',
+    'Mobile Accessories': 'Accesorios Móviles',
+    'Networking': 'Redes',
+    'Office Supplies': 'Suministros de Oficina',
+    'POS': 'POS',
+    'Peripherals': 'Periféricos',
+    'Power & Electrical': 'Energía y Eléctricos',
+    'Printers': 'Impresoras',
+    'Printing': 'Impresión',
+    'Storage': 'Almacenamiento',
+    'TV Accessories': 'Accesorios TV',
+    'Tablets': 'Tablets',
+    'Video': 'Video'
+  };
+
+  // Función para traducir categoría
+  const translateCategory = (category) => {
+    return categoryTranslations[category] || category;
+  };
+
   useEffect(() => {
     loadProducts();
   }, []);
@@ -23,7 +50,7 @@ const App = () => {
 
   const loadProducts = async () => {
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*&order=product_name.asc`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*&order=product_name.asc`, {
         headers: {
           'apikey': SUPABASE_KEY,
           'Content-Type': 'application/json'
@@ -34,7 +61,7 @@ const App = () => {
         const data = await response.json();
         setProducts(data);
         
-        const uniqueCategories = ['Todas', ...new Set(data.map(p => p.category).filter(Boolean))];
+        const uniqueCategories = ['Todas', ...new Set(data.map(p => translateCategory(p.category)).filter(Boolean))];
         setCategories(uniqueCategories);
       }
     } catch (error) {
@@ -48,7 +75,7 @@ const App = () => {
     let filtered = products;
 
     if (selectedCategory !== 'Todas') {
-      filtered = filtered.filter(p => p.category === selectedCategory);
+      filtered = filtered.filter(p => translateCategory(p.category) === selectedCategory);
     }
 
     if (searchTerm) {
@@ -64,16 +91,8 @@ const App = () => {
     setFilteredProducts(filtered);
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0
-    }).format(price);
-  };
-
   const sendWhatsApp = (product) => {
-    const message = `Hola! Me interesa el producto:\n\n*${product.product_name}*\nPrecio: ${formatPrice(product.price_cop)}\nCódigo: ${product.sku}\n\n¿Está disponible?`;
+    const message = `Hola! Me interesa el producto:\n\n*${product.product_name}*\nCódigo: ${product.sku}\n\n¿Cuál es el precio y está disponible?`;
     const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
@@ -174,7 +193,7 @@ const App = () => {
                 <div className="p-4">
                   <div className="mb-2">
                     <span className="text-xs text-indigo-600 font-semibold bg-indigo-50 px-2 py-1 rounded">
-                      {product.category}
+                      {translateCategory(product.category)}
                     </span>
                     {product.brand && (
                       <span className="text-xs text-gray-500 ml-2">
@@ -192,9 +211,6 @@ const App = () => {
                   </p>
 
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-2xl font-bold text-indigo-600">
-                      {formatPrice(product.price_cop)}
-                    </span>
                     <span className="text-sm text-gray-500">
                       Stock: {product.available_stock}
                     </span>
@@ -211,7 +227,7 @@ const App = () => {
                       }`}
                     >
                       <MessageCircle className="w-4 h-4" />
-                      {product.available_stock === 0 ? 'Agotado' : 'Consultar por WhatsApp'}
+                      {product.available_stock === 0 ? 'Agotado' : 'Consultar precio'}
                     </button>
                     
                     <div className="text-xs text-gray-500 text-center">
