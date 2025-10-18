@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Package, Filter } from 'lucide-react';
+import { Search, Package, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 
 const SUPABASE_URL = 'https://cxxifwpwarbrrodtzyqn.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4eGlmd3B3YXJicnJvZHR6eXFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjc5OTAsImV4cCI6MjA3MzgwMzk5MH0.tMgoakEvw8wsvrWZpRClZo3BpiUIJ4OQrQsiM4BGM54';
 
 export default function App() {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState(['Todas']);
+  const [categories, setCategories] = useState([]);
+  const [expandedCategory, setExpandedCategory] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('Todas');
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Función para traducir categorías
   const translateCategory = (category) => {
     if (!category) return '';
-    
-    // Normalizar: convertir a minúsculas y quitar espacios
     const normalized = category.toString().toLowerCase().trim();
     
     const translations = {
       'accessories': 'Accesorios',
-      'accesories': 'Accesorios', // Typo común
+      'accesories': 'Accesorios',
       'accesorios': 'Accesorios',
       'almacenamiento': 'Almacenamiento',
       'storage': 'Almacenamiento',
@@ -64,6 +63,149 @@ export default function App() {
     return translations[normalized] || category;
   };
 
+  const translateSubcategory = (subcategory) => {
+    if (!subcategory) return '';
+    const normalized = subcategory.toString().toLowerCase().trim();
+    
+    const translations = {
+      'adaptador serial': 'Adaptador Serial',
+      'adaptadores usb': 'Adaptadores USB',
+      'apuntadores láser': 'Apuntadores Láser',
+      'cables & adapters': 'Cables y Adaptadores',
+      'cables de carga': 'Cables de Carga',
+      'card readers': 'Lectores de Tarjetas',
+      'charging cables': 'Cables de Carga',
+      'cleaning kits': 'Kits de Limpieza',
+      'kit de limpieza': 'Kits de Limpieza',
+      'cooling pads': 'Bases Refrigerantes',
+      'bases refrigerantes': 'Bases Refrigerantes',
+      'laser pointers': 'Apuntadores Láser',
+      'power adapters': 'Adaptadores de Corriente',
+      'power adapter': 'Adaptador de Corriente',
+      'adaptadores de corriente': 'Adaptadores de Corriente',
+      'serial adapter': 'Adaptador Serial',
+      'stylus pens': 'Lápices Stylus',
+      'lápices stylus': 'Lápices Stylus',
+      'tv antennas': 'Antenas TV',
+      'antenas tv': 'Antenas TV',
+      'usb adapters': 'Adaptadores USB',
+      'usb hubs': 'Hubs USB',
+      'hubs usb': 'Hubs USB',
+      'cable usb-c': 'Cables USB-C',
+      'car chargers': 'Cargadores para Auto',
+      'chargers': 'Cargadores',
+      'charging adapters': 'Adaptadores de Carga',
+      'lightning cables': 'Cables Lightning',
+      'micro-usb cables': 'Cables Micro-USB',
+      'multi-purpose cables': 'Cables Multiuso',
+      'otg adapters': 'Adaptadores OTG',
+      'proprietary cables': 'Cables Propietarios',
+      'tips/ends & multi-strips': 'Puntas y Regletas',
+      'tv stands': 'Bases para TV',
+      'flash drives': 'Memorias USB',
+      'external hard drives': 'Discos Duros Externos',
+      'external hdds': 'Discos Duros Externos',
+      'internal hdds': 'Discos Duros Internos',
+      'storage adapters': 'Adaptadores de Almacenamiento',
+      'tarjetas de memoria': 'Tarjetas de Memoria',
+      'external optical drives': 'Unidades Ópticas Externas',
+      'adaptadores de audio': 'Adaptadores de Audio',
+      'audio adapters': 'Adaptadores de Audio',
+      'audífonos': 'Audífonos',
+      'audio cables': 'Cables de Audio',
+      'bluetooth speakers': 'Bocinas Bluetooth',
+      'call center headsets': 'Audífonos Call Center',
+      'computer speakers': 'Bocinas para PC',
+      'headphones': 'Audífonos',
+      'headsets': 'Audífonos con Micrófono',
+      'speakers': 'Bocinas',
+      'microphones': 'Micrófonos',
+      'microphone stands': 'Bases para Micrófono',
+      'microphones cordless': 'Micrófonos Inalámbricos',
+      'microphones dynamis': 'Micrófonos Dinámicos',
+      'microphones gamer': 'Micrófonos Gamer',
+      'microphones lavalier': 'Micrófonos de Solapa',
+      'microphones professional': 'Micrófonos Profesionales',
+      'portable speakers': 'Bocinas Portátiles',
+      'soundcards': 'Tarjetas de Sonido',
+      'wired earphones': 'Audífonos con Cable',
+      'cameras': 'Cámaras',
+      'dvrs & nvrs': 'DVRs y NVRs',
+      'fuentes de poder': 'Fuentes de Poder',
+      'ram': 'Memoria RAM',
+      'cooling solutions': 'Soluciones de Enfriamiento',
+      'desktop pcs': 'PCs de Escritorio',
+      'desktop towers': 'Torres de Escritorio',
+      'laptop bags & cases': 'Mochilas y Estuches',
+      'laptops': 'Laptops',
+      'all in one': 'Todo en Uno',
+      'accessories': 'Accesorios',
+      'gamepads': 'Controles',
+      'gaming combos': 'Combos Gamer',
+      'gaming keyboards': 'Teclados Gamer',
+      'mouse gamer': 'Mouse Gamer',
+      'sillas': 'Sillas',
+      'teclados mecánicos': 'Teclados Mecánicos',
+      'cartuchos de tinta': 'Cartuchos de Tinta',
+      'cartuchos de tóner': 'Cartuchos de Tóner',
+      'imaging units': 'Unidades de Imagen',
+      'ink bottles': 'Botellas de Tinta',
+      'label printer ribbons': 'Cintas para Etiquetas',
+      'label ribbons': 'Cintas para Etiquetas',
+      'labels': 'Etiquetas',
+      'maintenance kits - pads': 'Kits de Mantenimiento',
+      'pos printers': 'Impresoras POS',
+      'printer cables': 'Cables de Impresora',
+      'printer chips': 'Chips de Impresora',
+      'printer drums': 'Tambores de Impresora',
+      'printer ribbons': 'Cintas de Impresora',
+      'thermal paper rolls': 'Rollos de Papel Térmico',
+      'toner powder': 'Polvo de Tóner',
+      'toner refill kits': 'Kits de Recarga',
+      'usb extender': 'Extensores USB',
+      'scanners': 'Escáneres',
+      'inkjet printers': 'Impresoras de Inyección',
+      'laser printers': 'Impresoras Láser',
+      'power banks': 'Bancos de Energía',
+      'printer paper': 'Papel para Impresora',
+      'keyboards': 'Teclados',
+      'keyboard protectors': 'Protectores de Teclado',
+      'keyboards & mice': 'Teclados y Mouse',
+      'mouse': 'Mouse',
+      'mouse pads': 'Mouse Pads',
+      'barcode scanners': 'Lectores de Código',
+      'cash drawers': 'Cajas Registradoras',
+      'batteries': 'Baterías',
+      'laptop adapters': 'Adaptadores para Laptop',
+      'monitor adapters': 'Adaptadores para Monitor',
+      'pos adapters': 'Adaptadores POS',
+      'power cords': 'Cables de Corriente',
+      'sealed lead acid (sla) batteries': 'Baterías de Plomo',
+      'surge protectors': 'Protectores de Sobretensión',
+      'universal adapters': 'Adaptadores Universales',
+      'ups': 'UPS',
+      'voltage regulators': 'Reguladores de Voltaje',
+      'bluetooth adapter': 'Adaptador Bluetooth',
+      'connectors': 'Conectores',
+      'ethernet cables': 'Cables Ethernet',
+      'fiber optic cables': 'Cables de Fibra Óptica',
+      'network adapters': 'Adaptadores de Red',
+      'nw ext-hub/splrs': 'Hubs y Splitters',
+      'routers': 'Routers',
+      'switches': 'Switches',
+      'tools': 'Herramientas',
+      'wi-fi extenders': 'Extensores WiFi',
+      'graphics tablets': 'Tabletas Gráficas',
+      'graphics cards': 'Tarjetas Gráficas',
+      'monitors': 'Monitores',
+      'splitters': 'Divisores',
+      'video adapters': 'Adaptadores de Video',
+      'video cables': 'Cables de Video'
+    };
+    
+    return translations[normalized] || subcategory;
+  };
+
   useEffect(() => {
     loadProducts();
   }, []);
@@ -81,20 +223,31 @@ export default function App() {
         const data = await response.json();
         setProducts(data);
         
-        // Obtener categorías, limpiar, traducir y eliminar duplicados
-        const translatedCategories = data
-          .map(product => product.category)
-          .filter(Boolean) // Eliminar null/undefined
-          .map(cat => cat.toString().trim()) // Limpiar espacios
-          .filter(cat => cat !== '') // Eliminar vacías
-          .map(cat => translateCategory(cat)); // Traducir
+        // Crear estructura de categorías con subcategorías
+        const categoryMap = {};
         
-        // Eliminar duplicados (después de traducir) y ordenar
-        const uniqueCategories = [...new Set(translatedCategories)]
-          .filter(cat => cat !== '') // Por si acaso
-          .sort((a, b) => a.localeCompare(b, 'es'));
+        data.forEach(product => {
+          const category = translateCategory(product.category);
+          const subcategory = translateSubcategory(product.category_sub);
+          
+          if (category && !categoryMap[category]) {
+            categoryMap[category] = new Set();
+          }
+          
+          if (category && subcategory) {
+            categoryMap[category].add(subcategory);
+          }
+        });
         
-        setCategories(['Todas', ...uniqueCategories]);
+        // Convertir a array y ordenar
+        const categoriesArray = Object.keys(categoryMap)
+          .sort((a, b) => a.localeCompare(b, 'es'))
+          .map(cat => ({
+            name: cat,
+            subcategories: Array.from(categoryMap[cat]).sort((a, b) => a.localeCompare(b, 'es'))
+          }));
+        
+        setCategories(categoriesArray);
       }
     } catch (error) {
       console.error('Error loading products:', error);
@@ -103,15 +256,43 @@ export default function App() {
     }
   };
 
+  const handleCategoryClick = (categoryName) => {
+    if (categoryName === 'Todas') {
+      setSelectedCategory('Todas');
+      setSelectedSubcategory(null);
+      setExpandedCategory(null);
+    } else if (expandedCategory === categoryName) {
+      // Si ya está expandida, la colapso
+      setExpandedCategory(null);
+    } else {
+      // Expandir y seleccionar
+      setExpandedCategory(categoryName);
+      setSelectedCategory(categoryName);
+      setSelectedSubcategory(null);
+    }
+  };
+
+  const handleSubcategoryClick = (subcategoryName) => {
+    setSelectedSubcategory(subcategoryName);
+  };
+
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.product_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.sku?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const translatedCategory = translateCategory(product.category);
-    const matchesCategory = selectedCategory === 'Todas' || translatedCategory === selectedCategory;
+    if (selectedCategory === 'Todas') {
+      return matchesSearch;
+    }
     
-    return matchesSearch && matchesCategory;
+    const translatedCategory = translateCategory(product.category);
+    const translatedSubcategory = translateSubcategory(product.category_sub);
+    
+    if (selectedSubcategory) {
+      return matchesSearch && translatedCategory === selectedCategory && translatedSubcategory === selectedSubcategory;
+    } else {
+      return matchesSearch && translatedCategory === selectedCategory;
+    }
   });
 
   const handleWhatsAppContact = (product) => {
@@ -158,19 +339,60 @@ export default function App() {
             <Filter className="text-white" />
             <h2 className="text-white text-lg font-semibold">Filtrar por categoría:</h2>
           </div>
-          <div className="flex flex-wrap gap-3">
-            {categories.map(category => (
+          
+          <div className="space-y-3">
+            {/* Botón "Todas" */}
+            <div>
               <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => handleCategoryClick('Todas')}
                 className={`px-6 py-2 rounded-full font-medium transition-all ${
-                  selectedCategory === category
+                  selectedCategory === 'Todas'
                     ? 'bg-white text-blue-600 shadow-lg scale-105'
                     : 'bg-white/20 text-white hover:bg-white/30'
                 }`}
               >
-                {category}
+                Todas
               </button>
+            </div>
+
+            {/* Categorías con subcategorías */}
+            {categories.map(category => (
+              <div key={category.name}>
+                <button
+                  onClick={() => handleCategoryClick(category.name)}
+                  className={`px-6 py-2 rounded-full font-medium transition-all inline-flex items-center gap-2 ${
+                    selectedCategory === category.name && !selectedSubcategory
+                      ? 'bg-white text-blue-600 shadow-lg scale-105'
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
+                >
+                  {category.name}
+                  {expandedCategory === category.name ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </button>
+                
+                {/* Subcategorías desplegables */}
+                {expandedCategory === category.name && (
+                  <div className="ml-8 mt-2 flex flex-wrap gap-2">
+                    {category.subcategories.map(subcategory => (
+                      <button
+                        key={subcategory}
+                        onClick={() => handleSubcategoryClick(subcategory)}
+                        className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                          selectedSubcategory === subcategory
+                            ? 'bg-blue-400 text-white shadow-md'
+                            : 'bg-white/40 text-white hover:bg-white/50'
+                        }`}
+                      >
+                        {subcategory}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>
@@ -178,6 +400,8 @@ export default function App() {
         <div className="mb-6">
           <p className="text-white text-center text-lg">
             Mostrando {filteredProducts.length} de {products.length} productos
+            {selectedSubcategory && ` en ${selectedCategory} - ${selectedSubcategory}`}
+            {selectedCategory !== 'Todas' && !selectedSubcategory && ` en ${selectedCategory}`}
           </p>
         </div>
 
