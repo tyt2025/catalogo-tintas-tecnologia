@@ -318,7 +318,7 @@ export default function App() {
 
   const handleWhatsAppContact = (product) => {
     const message = `Hola, me interesa el producto:\n*${product.product_name}*\n(SKU: ${product.sku})\n\n¿Podrían darme información sobre precio y disponibilidad?`;
-    const whatsappUrl = `https://wa.me/5216862504012?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/573102605693?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
