@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Package, Filter } from 'lucide-react';
 
- const SUPABASE_URL = 'https://cxxifwpwarbrrodtzyqn.supabase.co';
-   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4eGlmd3B3YXJicnJvZHR6eXFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjc5OTAsImV4cCI6MjA3MzgwMzk5MH0.tMgoakEvw8wsvrWZpRClZo3BpiUIJ4OQrQsiM4BGM54';
+const SUPABASE_URL = 'https://cxxifwpwarbrrodtzyqn.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4eGlmd3B3YXJicnJvZHR6eXFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjc5OTAsImV4cCI6MjA3MzgwMzk5MH0.tMgoakEvw8wsvrWZpRClZo3BpiUIJ4OQrQsiM4BGM54';
+
 export default function App() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(['Todas']);
@@ -48,40 +49,73 @@ export default function App() {
   // Función para traducir subcategorías
   const translateSubcategory = (subcategory) => {
     const translations = {
+      // Accesorios
+      'card readers': 'Lectores de Tarjetas',
+      'charging cables': 'Cables de Carga',
+      'cleaning kits': 'Kits de Limpieza',
+      'cooling pads': 'Bases Refrigerantes',
+      'laser pointers': 'Apuntadores Láser',
+      'power adapters': 'Adaptadores de Corriente',
+      'serial adapter': 'Adaptador Serial',
+      'stylus pens': 'Lápices Stylus',
+      'tv antennas': 'Antenas TV',
+      'usb adapters': 'Adaptadores USB',
+      'usb hubs': 'Hubs USB',
+      
+      // Audio
+      'audio adapters': 'Adaptadores de Audio',
+      'headphones': 'Audífonos',
+      'speakers': 'Bocinas',
+      'microphones': 'Micrófonos',
+      
+      // Impresión
       'ink cartridges': 'Cartuchos de Tinta',
       'toner cartridges': 'Cartuchos de Tóner',
       'printer accessories': 'Accesorios de Impresora',
       'printing': 'Impresión',
       'toner': 'Tóner',
       'ink': 'Tinta',
+      
+      // Periféricos
       'mouse': 'Mouse',
       'keyboard': 'Teclado',
       'webcam': 'Cámara Web',
       'headset': 'Audífonos',
+      
+      // Cables
       'cables': 'Cables',
       'usb cables': 'Cables USB',
       'hdmi cables': 'Cables HDMI',
       'network cables': 'Cables de Red',
+      
+      // Almacenamiento
       'hard drives': 'Discos Duros',
       'usb drives': 'Memorias USB',
       'memory cards': 'Tarjetas de Memoria',
+      
+      // Redes
       'routers': 'Routers',
       'switches': 'Switches',
       'wifi': 'WiFi',
-      'speakers': 'Bocinas',
-      'headphones': 'Audífonos',
-      'microphones': 'Micrófonos',
+      
+      // Energía
       'ups': 'UPS',
       'power supplies': 'Fuentes de Poder',
       'batteries': 'Baterías',
+      
+      // Oficina
       'monitors': 'Monitores',
       'projectors': 'Proyectores',
-      'gaming mouse': 'Mouse',
-      'gaming keyboard': 'Teclado',
-      'gaming headset': 'Audífonos',
-      'gaming chair': 'Silla',
+      
+      // Gamer
+      'gaming mouse': 'Mouse Gamer',
+      'gaming keyboard': 'Teclado Gamer',
+      'gaming headset': 'Audífonos Gamer',
+      'gaming chair': 'Silla Gamer',
       'mousepad': 'Mousepad',
       'controller': 'Control',
+      
+      // Genérico
       'accessories': 'Accesorios'
     };
     
@@ -95,7 +129,7 @@ export default function App() {
     if (!product) return 'Sin categoría';
     
     const category = translateCategory(product.category);
-    const subcategory = translateSubcategory(product.subcategory);
+    const subcategory = translateSubcategory(product.category_sub);
     
     // Si no hay ninguna, retornar mensaje por defecto
     if (!category && !subcategory) return 'Sin categoría';
@@ -227,9 +261,9 @@ export default function App() {
           {filteredProducts.map(product => (
             <div key={product.id} className="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:scale-105">
               <div className="aspect-square bg-gray-100 flex items-center justify-center p-4">
-                {product.image_url ? (
+                {product.image_url_png ? (
                   <img 
-                    src={product.image_url} 
+                    src={product.image_url_png} 
                     alt={product.product_name}
                     className="w-full h-full object-contain"
                   />
@@ -282,4 +316,3 @@ export default function App() {
     </div>
   );
 }
-
