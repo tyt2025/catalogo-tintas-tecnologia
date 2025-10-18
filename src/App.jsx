@@ -61,8 +61,10 @@ const App = () => {
         const data = await response.json();
         setProducts(data);
         
-        const uniqueCategories = ['Todas', ...new Set(data.map(p => translateCategory(p.category)).filter(Boolean))];
-        setCategories(uniqueCategories);
+       const categoriesInEnglish = [...new Set(data.map(p => p.category).filter(Boolean))];
+const translatedCategories = categoriesInEnglish.map(cat => translateCategory(cat));
+const uniqueTranslatedCategories = [...new Set(translatedCategories)].sort();
+setCategories(['Todas', ...uniqueTranslatedCategories]);
       }
     } catch (error) {
       console.error('Error loading products:', error);
