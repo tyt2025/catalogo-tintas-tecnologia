@@ -14,31 +14,40 @@ export default function App() {
   // Función para traducir categorías
   const translateCategory = (category) => {
     const translations = {
-      'printing': 'Impresión',
       'accessories': 'Accesorios',
+      'accesorios': 'Accesorios',
+      'almacenamiento': 'Almacenamiento',
+      'storage': 'Almacenamiento',
       'audio': 'Audio',
       'cables': 'Cables',
-      'storage': 'Almacenamiento',
-      'networking': 'Redes',
-      'office': 'Oficina',
-      'power': 'Energía',
-      'peripherals': 'Periféricos',
+      'cctv': 'CCTV',
+      'computer components': 'Componentes de Computadora',
+      'componentes de computadora': 'Componentes de Computadora',
+      'components': 'Componentes',
+      'computers': 'Computadoras',
+      'computadoras': 'Computadoras',
       'gamer': 'Gamer',
       'gaming': 'Gamer',
-      'components': 'Componentes',
-      'laptop': 'Laptop',
-      'desktop': 'Escritorio',
-      'security': 'Seguridad',
-      'software': 'Software',
-      'tv accessories': 'Accesorios TV',
-      'mobile accessories': 'Accesorios Móviles',
-      'pos': 'Pos',
+      'impresion': 'Impresión',
+      'printing': 'Impresión',
+      'impresoras': 'Impresoras',
       'printers': 'Impresoras',
+      'mobile accesories': 'Accesorios Móviles',
+      'mobile accessories': 'Accesorios Móviles',
+      'accesorios móviles': 'Accesorios Móviles',
+      'networking': 'Redes',
+      'redes': 'Redes',
+      'office supplies': 'Suministros de Oficina',
+      'suministros de oficina': 'Suministros de Oficina',
+      'peripherals': 'Periféricos',
+      'periféricos': 'Periféricos',
+      'pos': 'POS',
+      'power & electrical': 'Energía y Eléctricos',
+      'power': 'Energía',
       'tablets': 'Tablets',
-      'video': 'Video',
-      'computadoras': 'Computadoras',
-      'cctv': 'CCTV',
-      'almacenamiento': 'Almacenamiento'
+      'tv accessories': 'Accesorios TV',
+      'accesorios tv': 'Accesorios TV',
+      'video': 'Video'
     };
     
     if (!category) return '';
@@ -50,73 +59,169 @@ export default function App() {
   const translateSubcategory = (subcategory) => {
     const translations = {
       // Accesorios
+      'adaptador serial': 'Adaptador Serial',
+      'adaptadores usb': 'Adaptadores USB',
+      'apuntadores láser': 'Apuntadores Láser',
+      'cables & adapters': 'Cables y Adaptadores',
+      'cables de carga': 'Cables de Carga',
       'card readers': 'Lectores de Tarjetas',
       'charging cables': 'Cables de Carga',
       'cleaning kits': 'Kits de Limpieza',
+      'kit de limpieza': 'Kits de Limpieza',
       'cooling pads': 'Bases Refrigerantes',
+      'bases refrigerantes': 'Bases Refrigerantes',
       'laser pointers': 'Apuntadores Láser',
       'power adapters': 'Adaptadores de Corriente',
+      'power adapter': 'Adaptador de Corriente',
+      'adaptadores de corriente': 'Adaptadores de Corriente',
       'serial adapter': 'Adaptador Serial',
       'stylus pens': 'Lápices Stylus',
+      'lápices stylus': 'Lápices Stylus',
       'tv antennas': 'Antenas TV',
+      'antenas tv': 'Antenas TV',
       'usb adapters': 'Adaptadores USB',
       'usb hubs': 'Hubs USB',
-      
-      // Audio
-      'audio adapters': 'Adaptadores de Audio',
-      'headphones': 'Audífonos',
-      'speakers': 'Bocinas',
-      'microphones': 'Micrófonos',
-      
-      // Impresión
-      'ink cartridges': 'Cartuchos de Tinta',
-      'toner cartridges': 'Cartuchos de Tóner',
-      'printer accessories': 'Accesorios de Impresora',
-      'printing': 'Impresión',
-      'toner': 'Tóner',
-      'ink': 'Tinta',
-      
-      // Periféricos
-      'mouse': 'Mouse',
-      'keyboard': 'Teclado',
-      'webcam': 'Cámara Web',
-      'headset': 'Audífonos',
-      
-      // Cables
-      'cables': 'Cables',
-      'usb cables': 'Cables USB',
-      'hdmi cables': 'Cables HDMI',
-      'network cables': 'Cables de Red',
+      'hubs usb': 'Hubs USB',
+      'cable usb-c': 'Cables USB-C',
+      'car chargers': 'Cargadores para Auto',
+      'chargers': 'Cargadores',
+      'charging adapters': 'Adaptadores de Carga',
+      'lightning cables': 'Cables Lightning',
+      'micro-usb cables': 'Cables Micro-USB',
+      'multi-purpose cables': 'Cables Multiuso',
+      'otg adapters': 'Adaptadores OTG',
+      'proprietary cables': 'Cables Propietarios',
+      'tips/ends & multi-strips': 'Puntas y Regletas',
+      'tv stands': 'Bases para TV',
       
       // Almacenamiento
-      'hard drives': 'Discos Duros',
-      'usb drives': 'Memorias USB',
-      'memory cards': 'Tarjetas de Memoria',
+      'flash drives': 'Memorias USB',
+      'external hard drives': 'Discos Duros Externos',
+      'external hdds': 'Discos Duros Externos',
+      'internal hdds': 'Discos Duros Internos',
+      'storage adapters': 'Adaptadores de Almacenamiento',
+      'tarjetas de memoria': 'Tarjetas de Memoria',
+      'external optical drives': 'Unidades Ópticas Externas',
       
-      // Redes
-      'routers': 'Routers',
-      'switches': 'Switches',
-      'wifi': 'WiFi',
+      // Audio
+      'adaptadores de audio': 'Adaptadores de Audio',
+      'audio adapters': 'Adaptadores de Audio',
+      'audífonos': 'Audífonos',
+      'audio cables': 'Cables de Audio',
+      'bluetooth speakers': 'Bocinas Bluetooth',
+      'call center headsets': 'Audífonos para Call Center',
+      'computer speakers': 'Bocinas para Computadora',
+      'headphones': 'Audífonos',
+      'headsets': 'Audífonos con Micrófono',
+      'speakers': 'Bocinas',
+      'microphones': 'Micrófonos',
+      'microphone stands': 'Bases para Micrófono',
+      'microphones cordless': 'Micrófonos Inalámbricos',
+      'microphones dynamis': 'Micrófonos Dinámicos',
+      'microphones gamer': 'Micrófonos Gamer',
+      'microphones lavalier': 'Micrófonos de Solapa',
+      'microphones professional': 'Micrófonos Profesionales',
+      'portable speakers': 'Bocinas Portátiles',
+      'soundcards': 'Tarjetas de Sonido',
+      'wired earphones': 'Audífonos con Cable',
       
-      // Energía
-      'ups': 'UPS',
-      'power supplies': 'Fuentes de Poder',
-      'batteries': 'Baterías',
+      // CCTV
+      'cameras': 'Cámaras',
+      'dvrs & nvrs': 'DVRs y NVRs',
       
-      // Oficina
-      'monitors': 'Monitores',
-      'projectors': 'Proyectores',
+      // Componentes
+      'fuentes de poder': 'Fuentes de Poder',
+      'ram': 'Memoria RAM',
+      'cooling solutions': 'Soluciones de Enfriamiento',
+      
+      // Computadoras
+      'desktop pcs': 'PCs de Escritorio',
+      'desktop towers': 'Torres de Escritorio',
+      'laptop bags & cases': 'Mochilas y Estuches',
+      'laptops': 'Laptops',
+      'all in one': 'Todo en Uno',
       
       // Gamer
-      'gaming mouse': 'Mouse Gamer',
-      'gaming keyboard': 'Teclado Gamer',
-      'gaming headset': 'Audífonos Gamer',
-      'gaming chair': 'Silla Gamer',
-      'mousepad': 'Mousepad',
-      'controller': 'Control',
+      'accessories': 'Accesorios',
+      'gamepads': 'Controles',
+      'gaming combos': 'Combos Gamer',
+      'gaming keyboards': 'Teclados Gamer',
+      'mouse gamer': 'Mouse Gamer',
+      'sillas': 'Sillas',
+      'teclados mecánicos': 'Teclados Mecánicos',
       
-      // Genérico
-      'accessories': 'Accesorios'
+      // Impresión
+      'cartuchos de tinta': 'Cartuchos de Tinta',
+      'cartuchos de tóner': 'Cartuchos de Tóner',
+      'imaging units': 'Unidades de Imagen',
+      'ink bottles': 'Botellas de Tinta',
+      'label printer ribbons': 'Cintas para Etiquetas',
+      'label ribbons': 'Cintas para Etiquetas',
+      'labels': 'Etiquetas',
+      'maintenance kits - pads': 'Kits de Mantenimiento',
+      'pos printers': 'Impresoras POS',
+      'printer cables': 'Cables de Impresora',
+      'printer chips': 'Chips de Impresora',
+      'printer drums': 'Tambores de Impresora',
+      'printer ribbons': 'Cintas de Impresora',
+      'thermal paper rolls': 'Rollos de Papel Térmico',
+      'toner powder': 'Polvo de Tóner',
+      'toner refill kits': 'Kits de Recarga de Tóner',
+      'usb extender': 'Extensores USB',
+      
+      // Impresoras
+      'scanners': 'Escáneres',
+      'inkjet printers': 'Impresoras de Inyección',
+      'laser printers': 'Impresoras Láser',
+      
+      // Accesorios Móviles
+      'power banks': 'Bancos de Energía',
+      
+      // Suministros de Oficina
+      'printer paper': 'Papel para Impresora',
+      
+      // Periféricos
+      'keyboards': 'Teclados',
+      'keyboard protectors': 'Protectores de Teclado',
+      'keyboards & mice': 'Teclados y Mouse',
+      'mouse': 'Mouse',
+      'mouse pads': 'Mouse Pads',
+      
+      // POS
+      'barcode scanners': 'Lectores de Código de Barras',
+      'cash drawers': 'Cajas Registradoras',
+      
+      // Power & Electrical
+      'batteries': 'Baterías',
+      'laptop adapters': 'Adaptadores para Laptop',
+      'monitor adapters': 'Adaptadores para Monitor',
+      'pos adapters': 'Adaptadores POS',
+      'power cords': 'Cables de Corriente',
+      'sealed lead acid (sla) batteries': 'Baterías de Plomo',
+      'surge protectors': 'Protectores de Sobretensión',
+      'universal adapters': 'Adaptadores Universales',
+      'ups': 'UPS',
+      'voltage regulators': 'Reguladores de Voltaje',
+      'bluetooth adapter': 'Adaptador Bluetooth',
+      
+      // Redes
+      'connectors': 'Conectores',
+      'ethernet cables': 'Cables Ethernet',
+      'fiber optic cables': 'Cables de Fibra Óptica',
+      'network adapters': 'Adaptadores de Red',
+      'nw ext-hub/splrs': 'Hubs y Splitters',
+      'routers': 'Routers',
+      'switches': 'Switches',
+      'tools': 'Herramientas',
+      'wi-fi extenders': 'Extensores WiFi',
+      
+      // Video
+      'graphics tablets': 'Tabletas Gráficas',
+      'graphics cards': 'Tarjetas Gráficas',
+      'monitors': 'Monitores',
+      'splitters': 'Divisores',
+      'video adapters': 'Adaptadores de Video',
+      'video cables': 'Cables de Video'
     };
     
     if (!subcategory) return '';
