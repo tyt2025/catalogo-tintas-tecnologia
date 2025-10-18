@@ -13,8 +13,14 @@ export default function App() {
 
   // Función para traducir categorías
   const translateCategory = (category) => {
+    if (!category) return '';
+    
+    // Normalizar: convertir a minúsculas y quitar espacios
+    const normalized = category.toString().toLowerCase().trim();
+    
     const translations = {
       'accessories': 'Accesorios',
+      'accesories': 'Accesorios', // Typo común
       'accesorios': 'Accesorios',
       'almacenamiento': 'Almacenamiento',
       'storage': 'Almacenamiento',
@@ -23,35 +29,38 @@ export default function App() {
       'cctv': 'CCTV',
       'computer components': 'Componentes de Computadora',
       'componentes de computadora': 'Componentes de Computadora',
-      'components': 'Componentes',
+      'components': 'Componentes de Computadora',
       'computers': 'Computadoras',
       'computadoras': 'Computadoras',
       'gamer': 'Gamer',
       'gaming': 'Gamer',
       'impresion': 'Impresión',
+      'impresión': 'Impresión',
       'printing': 'Impresión',
       'impresoras': 'Impresoras',
       'printers': 'Impresoras',
       'mobile accesories': 'Accesorios Móviles',
       'mobile accessories': 'Accesorios Móviles',
       'accesorios móviles': 'Accesorios Móviles',
+      'accesorios moviles': 'Accesorios Móviles',
       'networking': 'Redes',
       'redes': 'Redes',
       'office supplies': 'Suministros de Oficina',
       'suministros de oficina': 'Suministros de Oficina',
       'peripherals': 'Periféricos',
       'periféricos': 'Periféricos',
+      'perifericos': 'Periféricos',
       'pos': 'POS',
       'power & electrical': 'Energía y Eléctricos',
-      'power': 'Energía',
+      'power': 'Energía y Eléctricos',
+      'energia': 'Energía y Eléctricos',
+      'energía': 'Energía y Eléctricos',
       'tablets': 'Tablets',
       'tv accessories': 'Accesorios TV',
       'accesorios tv': 'Accesorios TV',
       'video': 'Video'
     };
     
-    if (!category) return '';
-    const normalized = category.toLowerCase().trim();
     return translations[normalized] || category;
   };
 
@@ -72,14 +81,17 @@ export default function App() {
         const data = await response.json();
         setProducts(data);
         
-        // Obtener solo las categorías principales, traducirlas y eliminar duplicados
-        const allCategories = data
+        // Obtener categorías, limpiar, traducir y eliminar duplicados
+        const translatedCategories = data
           .map(product => product.category)
           .filter(Boolean) // Eliminar null/undefined
+          .map(cat => cat.toString().trim()) // Limpiar espacios
+          .filter(cat => cat !== '') // Eliminar vacías
           .map(cat => translateCategory(cat)); // Traducir
         
-        // Eliminar duplicados y ordenar
-        const uniqueCategories = [...new Set(allCategories)]
+        // Eliminar duplicados (después de traducir) y ordenar
+        const uniqueCategories = [...new Set(translatedCategories)]
+          .filter(cat => cat !== '') // Por si acaso
           .sort((a, b) => a.localeCompare(b, 'es'));
         
         setCategories(['Todas', ...uniqueCategories]);
