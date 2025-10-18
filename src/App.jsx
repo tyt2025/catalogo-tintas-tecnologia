@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Package, Filter } from 'lucide-react';
 
-const SUPABASE_URL = 'https://aqkgbriiwtmbhnvtwk.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxa2dicmlpd3RtYmhudnR3ayIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzM3NDA1OTY3LCJleHAiOjIwNTI5ODE5Njd9.WoUXEwRa1a4Ks0T_0wVl4hxwWLT8IA_NE4AGO7jV2u8';
-
+ const SUPABASE_URL = 'https://cxxifwpwarbrrodtzyqn.supabase.co';
+   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4eGlmd3B3YXJicnJvZHR6eXFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjc5OTAsImV4cCI6MjA3MzgwMzk5MH0.tMgoakEvw8wsvrWZpRClZo3BpiUIJ4OQrQsiM4BGM54';
 export default function App() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(['Todas']);
