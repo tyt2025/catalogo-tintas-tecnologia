@@ -50,7 +50,7 @@ const App = () => {
 
   const loadProducts = async () => {
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*&order=product_name.asc`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/productos?select=*&order=product_name.asc`, {
         headers: {
           'apikey': SUPABASE_KEY,
           'Content-Type': 'application/json'
