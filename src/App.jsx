@@ -55,200 +55,6 @@ export default function App() {
     return translations[normalized] || category;
   };
 
-  // Función para traducir subcategorías
-  const translateSubcategory = (subcategory) => {
-    const translations = {
-      // Accesorios
-      'adaptador serial': 'Adaptador Serial',
-      'adaptadores usb': 'Adaptadores USB',
-      'apuntadores láser': 'Apuntadores Láser',
-      'cables & adapters': 'Cables y Adaptadores',
-      'cables de carga': 'Cables de Carga',
-      'card readers': 'Lectores de Tarjetas',
-      'charging cables': 'Cables de Carga',
-      'cleaning kits': 'Kits de Limpieza',
-      'kit de limpieza': 'Kits de Limpieza',
-      'cooling pads': 'Bases Refrigerantes',
-      'bases refrigerantes': 'Bases Refrigerantes',
-      'laser pointers': 'Apuntadores Láser',
-      'power adapters': 'Adaptadores de Corriente',
-      'power adapter': 'Adaptador de Corriente',
-      'adaptadores de corriente': 'Adaptadores de Corriente',
-      'serial adapter': 'Adaptador Serial',
-      'stylus pens': 'Lápices Stylus',
-      'lápices stylus': 'Lápices Stylus',
-      'tv antennas': 'Antenas TV',
-      'antenas tv': 'Antenas TV',
-      'usb adapters': 'Adaptadores USB',
-      'usb hubs': 'Hubs USB',
-      'hubs usb': 'Hubs USB',
-      'cable usb-c': 'Cables USB-C',
-      'car chargers': 'Cargadores para Auto',
-      'chargers': 'Cargadores',
-      'charging adapters': 'Adaptadores de Carga',
-      'lightning cables': 'Cables Lightning',
-      'micro-usb cables': 'Cables Micro-USB',
-      'multi-purpose cables': 'Cables Multiuso',
-      'otg adapters': 'Adaptadores OTG',
-      'proprietary cables': 'Cables Propietarios',
-      'tips/ends & multi-strips': 'Puntas y Regletas',
-      'tv stands': 'Bases para TV',
-      
-      // Almacenamiento
-      'flash drives': 'Memorias USB',
-      'external hard drives': 'Discos Duros Externos',
-      'external hdds': 'Discos Duros Externos',
-      'internal hdds': 'Discos Duros Internos',
-      'storage adapters': 'Adaptadores de Almacenamiento',
-      'tarjetas de memoria': 'Tarjetas de Memoria',
-      'external optical drives': 'Unidades Ópticas Externas',
-      
-      // Audio
-      'adaptadores de audio': 'Adaptadores de Audio',
-      'audio adapters': 'Adaptadores de Audio',
-      'audífonos': 'Audífonos',
-      'audio cables': 'Cables de Audio',
-      'bluetooth speakers': 'Bocinas Bluetooth',
-      'call center headsets': 'Audífonos para Call Center',
-      'computer speakers': 'Bocinas para Computadora',
-      'headphones': 'Audífonos',
-      'headsets': 'Audífonos con Micrófono',
-      'speakers': 'Bocinas',
-      'microphones': 'Micrófonos',
-      'microphone stands': 'Bases para Micrófono',
-      'microphones cordless': 'Micrófonos Inalámbricos',
-      'microphones dynamis': 'Micrófonos Dinámicos',
-      'microphones gamer': 'Micrófonos Gamer',
-      'microphones lavalier': 'Micrófonos de Solapa',
-      'microphones professional': 'Micrófonos Profesionales',
-      'portable speakers': 'Bocinas Portátiles',
-      'soundcards': 'Tarjetas de Sonido',
-      'wired earphones': 'Audífonos con Cable',
-      
-      // CCTV
-      'cameras': 'Cámaras',
-      'dvrs & nvrs': 'DVRs y NVRs',
-      
-      // Componentes
-      'fuentes de poder': 'Fuentes de Poder',
-      'ram': 'Memoria RAM',
-      'cooling solutions': 'Soluciones de Enfriamiento',
-      
-      // Computadoras
-      'desktop pcs': 'PCs de Escritorio',
-      'desktop towers': 'Torres de Escritorio',
-      'laptop bags & cases': 'Mochilas y Estuches',
-      'laptops': 'Laptops',
-      'all in one': 'Todo en Uno',
-      
-      // Gamer
-      'accessories': 'Accesorios',
-      'gamepads': 'Controles',
-      'gaming combos': 'Combos Gamer',
-      'gaming keyboards': 'Teclados Gamer',
-      'mouse gamer': 'Mouse Gamer',
-      'sillas': 'Sillas',
-      'teclados mecánicos': 'Teclados Mecánicos',
-      
-      // Impresión
-      'cartuchos de tinta': 'Cartuchos de Tinta',
-      'cartuchos de tóner': 'Cartuchos de Tóner',
-      'imaging units': 'Unidades de Imagen',
-      'ink bottles': 'Botellas de Tinta',
-      'label printer ribbons': 'Cintas para Etiquetas',
-      'label ribbons': 'Cintas para Etiquetas',
-      'labels': 'Etiquetas',
-      'maintenance kits - pads': 'Kits de Mantenimiento',
-      'pos printers': 'Impresoras POS',
-      'printer cables': 'Cables de Impresora',
-      'printer chips': 'Chips de Impresora',
-      'printer drums': 'Tambores de Impresora',
-      'printer ribbons': 'Cintas de Impresora',
-      'thermal paper rolls': 'Rollos de Papel Térmico',
-      'toner powder': 'Polvo de Tóner',
-      'toner refill kits': 'Kits de Recarga de Tóner',
-      'usb extender': 'Extensores USB',
-      
-      // Impresoras
-      'scanners': 'Escáneres',
-      'inkjet printers': 'Impresoras de Inyección',
-      'laser printers': 'Impresoras Láser',
-      
-      // Accesorios Móviles
-      'power banks': 'Bancos de Energía',
-      
-      // Suministros de Oficina
-      'printer paper': 'Papel para Impresora',
-      
-      // Periféricos
-      'keyboards': 'Teclados',
-      'keyboard protectors': 'Protectores de Teclado',
-      'keyboards & mice': 'Teclados y Mouse',
-      'mouse': 'Mouse',
-      'mouse pads': 'Mouse Pads',
-      
-      // POS
-      'barcode scanners': 'Lectores de Código de Barras',
-      'cash drawers': 'Cajas Registradoras',
-      
-      // Power & Electrical
-      'batteries': 'Baterías',
-      'laptop adapters': 'Adaptadores para Laptop',
-      'monitor adapters': 'Adaptadores para Monitor',
-      'pos adapters': 'Adaptadores POS',
-      'power cords': 'Cables de Corriente',
-      'sealed lead acid (sla) batteries': 'Baterías de Plomo',
-      'surge protectors': 'Protectores de Sobretensión',
-      'universal adapters': 'Adaptadores Universales',
-      'ups': 'UPS',
-      'voltage regulators': 'Reguladores de Voltaje',
-      'bluetooth adapter': 'Adaptador Bluetooth',
-      
-      // Redes
-      'connectors': 'Conectores',
-      'ethernet cables': 'Cables Ethernet',
-      'fiber optic cables': 'Cables de Fibra Óptica',
-      'network adapters': 'Adaptadores de Red',
-      'nw ext-hub/splrs': 'Hubs y Splitters',
-      'routers': 'Routers',
-      'switches': 'Switches',
-      'tools': 'Herramientas',
-      'wi-fi extenders': 'Extensores WiFi',
-      
-      // Video
-      'graphics tablets': 'Tabletas Gráficas',
-      'graphics cards': 'Tarjetas Gráficas',
-      'monitors': 'Monitores',
-      'splitters': 'Divisores',
-      'video adapters': 'Adaptadores de Video',
-      'video cables': 'Cables de Video'
-    };
-    
-    if (!subcategory) return '';
-    const normalized = subcategory.toLowerCase().trim();
-    return translations[normalized] || subcategory;
-  };
-
-  // Función para obtener la etiqueta combinada de categoría + subcategoría
-  const getCategoryLabel = (product) => {
-    if (!product) return 'Sin categoría';
-    
-    const category = translateCategory(product.category);
-    const subcategory = translateSubcategory(product.category_sub);
-    
-    // Si no hay ninguna, retornar mensaje por defecto
-    if (!category && !subcategory) return 'Sin categoría';
-    
-    // Si solo hay subcategoría, retornarla sola
-    if (!category) return subcategory;
-    
-    // Si solo hay categoría, retornarla sola
-    if (!subcategory) return category;
-    
-    // Si ambas existen, combinarlas
-    return `${category} - ${subcategory}`;
-  };
-
   useEffect(() => {
     loadProducts();
   }, []);
@@ -266,13 +72,14 @@ export default function App() {
         const data = await response.json();
         setProducts(data);
         
-        // Generar etiquetas combinadas de categoría + subcategoría
-        const categoryLabels = data
-          .map(product => getCategoryLabel(product))
-          .filter(label => label && label !== 'Sin categoría');
+        // Obtener solo las categorías principales, traducirlas y eliminar duplicados
+        const allCategories = data
+          .map(product => product.category)
+          .filter(Boolean) // Eliminar null/undefined
+          .map(cat => translateCategory(cat)); // Traducir
         
         // Eliminar duplicados y ordenar
-        const uniqueCategories = [...new Set(categoryLabels)]
+        const uniqueCategories = [...new Set(allCategories)]
           .sort((a, b) => a.localeCompare(b, 'es'));
         
         setCategories(['Todas', ...uniqueCategories]);
@@ -289,8 +96,8 @@ export default function App() {
                          product.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.sku?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const productCategoryLabel = getCategoryLabel(product);
-    const matchesCategory = selectedCategory === 'Todas' || productCategoryLabel === selectedCategory;
+    const translatedCategory = translateCategory(product.category);
+    const matchesCategory = selectedCategory === 'Todas' || translatedCategory === selectedCategory;
     
     return matchesSearch && matchesCategory;
   });
@@ -379,7 +186,7 @@ export default function App() {
               
               <div className="p-4">
                 <div className="text-xs text-blue-600 font-semibold mb-1">
-                  {getCategoryLabel(product)}
+                  {translateCategory(product.category)}
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
                   {product.product_name}
