@@ -65,7 +65,12 @@ export default function App() {
 
   const translateSubcategory = (subcategory) => {
     if (!subcategory) return '';
-    const normalized = subcategory.toString().toLowerCase().trim();
+    // Normalizar: minúsculas, quitar espacios extra, quitar comas
+    const normalized = subcategory.toString()
+      .toLowerCase()
+      .trim()
+      .replace(/,/g, '')  // Quitar comas
+      .replace(/\s+/g, ' '); // Normalizar espacios múltiples a uno solo
     
     const translations = {
       'adaptador serial': 'Adaptador Serial',
@@ -127,7 +132,6 @@ export default function App() {
       'microphones dynamic': 'Micrófonos Dinámicos',
       'microphones gamer': 'Micrófonos Gamer',
       'microphones lavalier': 'Micrófonos de Solapa',
-      'microphones, lavalier': 'Micrófonos de Solapa',
       'microphones professional': 'Micrófonos Profesionales',
       'portable speakers': 'Bocinas Portátiles',
       'soundcards': 'Tarjetas de Sonido',
