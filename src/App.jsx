@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Package, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 
-// Importar jsPDF desde CDN
-const jsPDF = window.jsPDF || null;
-
 const SUPABASE_URL = 'https://cxxifwpwarbrrodtzyqn.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4eGlmd3B3YXJicnJvZHR6eXFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjc5OTAsImV4cCI6MjA3MzgwMzk5MH0.tMgoakEvw8wsvrWZpRClZo3BpiUIJ4OQrQsiM4BGM54';
 
@@ -328,132 +325,169 @@ export default function App() {
 
   const handleDownloadSheet = async (product) => {
     try {
-      // Cargar jsPDF si no está disponible
-      if (!window.jsPDF) {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-        document.head.appendChild(script);
-        
-        await new Promise((resolve, reject) => {
-          script.onload = resolve;
-          script.onerror = reject;
-        });
-      }
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+      // Crear un canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
       
-      let yPosition = 20;
-
-      // Título de la empresa
-      doc.setFontSize(18);
-      doc.setTextColor(240, 0, 0); // Rojo #F00000
-      doc.text('TINTAS Y TECNOLOGÍA SMT', 105, yPosition, { align: 'center' });
-      yPosition += 10;
+      // Dimensiones del canvas (800x1200px)
+      canvas.width = 800;
+      canvas.height = 1200;
       
-      doc.setFontSize(12);
-      doc.setTextColor(100, 100, 100);
-      doc.text('Ficha Técnica de Producto', 105, yPosition, { align: 'center' });
-      yPosition += 15;
-
-      // Línea separadora
-      doc.setDrawColor(240, 0, 0);
-      doc.line(20, yPosition, 190, yPosition);
-      yPosition += 15;
-
-      // Agregar imagen si existe
+      // Fondo blanco
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      let yPosition = 40;
+      
+      // Cargar y dibujar la imagen del producto
       if (product.image_url_png) {
         try {
-          // Convertir imagen a base64
-          const response = await fetch(product.image_url_png);
-          const blob = await response.blob();
-          const reader = new FileReader();
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
           
-          await new Promise((resolve) => {
-            reader.onloadend = () => {
-              const base64data = reader.result;
-              try {
-                doc.addImage(base64data, 'PNG', 70, yPosition, 70, 70);
-              } catch (e) {
-                console.log('Error adding image:', e);
+          await new Promise((resolve, reject) => {
+            img.onload = () => {
+              // Calcular dimensiones para centrar la imagen
+              const maxWidth = 600;
+              const maxHeight = 400;
+              let imgWidth = img.width;
+              let imgHeight = img.height;
+              
+              // Escalar manteniendo proporción
+              if (imgWidth > maxWidth || imgHeight > maxHeight) {
+                const scale = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+                imgWidth = imgWidth * scale;
+                imgHeight = imgHeight * scale;
               }
+              
+              const xPosition = (canvas.width - imgWidth) / 2;
+              ctx.drawImage(img, xPosition, yPosition, imgWidth, imgHeight);
+              yPosition += imgHeight + 40;
               resolve();
             };
-            reader.readAsDataURL(blob);
+            img.onerror = () => {
+              yPosition += 50;
+              resolve();
+            };
+            img.src = product.image_url_png;
           });
-          
-          yPosition += 80;
         } catch (error) {
           console.log('Could not load image:', error);
-          yPosition += 10;
+          yPosition += 50;
         }
+      } else {
+        yPosition += 50;
       }
-
-      // Nombre del producto
-      doc.setFontSize(16);
-      doc.setTextColor(0, 0, 0);
-      const productName = doc.splitTextToSize(product.product_name, 170);
-      doc.text(productName, 20, yPosition);
-      yPosition += (productName.length * 7) + 10;
-
+      
+      // Configurar texto
+      ctx.textAlign = 'left';
+      const leftMargin = 40;
+      const rightMargin = 760;
+      const maxWidth = rightMargin - leftMargin;
+      
+      // Nombre del producto (título grande)
+      ctx.font = 'bold 32px Arial';
+      ctx.fillStyle = '#000000';
+      const titleLines = wrapText(ctx, product.product_name, maxWidth);
+      titleLines.forEach(line => {
+        ctx.fillText(line, leftMargin, yPosition);
+        yPosition += 40;
+      });
+      yPosition += 10;
+      
       // SKU
-      doc.setFontSize(11);
-      doc.setTextColor(80, 80, 80);
-      doc.text(`SKU: ${product.sku}`, 20, yPosition);
-      yPosition += 8;
-
+      ctx.font = '20px Arial';
+      ctx.fillStyle = '#555555';
+      ctx.fillText(`SKU: ${product.sku}`, leftMargin, yPosition);
+      yPosition += 30;
+      
       // Marca
       if (product.brand) {
-        doc.text(`Marca: ${product.brand}`, 20, yPosition);
-        yPosition += 8;
+        ctx.fillText(`Marca: ${product.brand}`, leftMargin, yPosition);
+        yPosition += 30;
       }
-
+      
       // Garantía
       if (product.warranty_months) {
-        doc.text(`Garantía: ${product.warranty_months} meses`, 20, yPosition);
-        yPosition += 8;
+        ctx.fillText(`Garantía: ${product.warranty_months} meses`, leftMargin, yPosition);
+        yPosition += 30;
       }
-
-      yPosition += 5;
-
+      
+      yPosition += 20;
+      
       // Descripción
       if (product.description) {
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.text('Descripción:', 20, yPosition);
-        yPosition += 8;
+        ctx.font = 'bold 24px Arial';
+        ctx.fillStyle = '#000000';
+        ctx.fillText('Descripción:', leftMargin, yPosition);
+        yPosition += 35;
         
-        doc.setFontSize(10);
-        doc.setTextColor(60, 60, 60);
-        const descriptionLines = doc.splitTextToSize(product.description, 170);
-        doc.text(descriptionLines, 20, yPosition);
-        yPosition += (descriptionLines.length * 5) + 10;
+        ctx.font = '18px Arial';
+        ctx.fillStyle = '#333333';
+        const descLines = wrapText(ctx, product.description, maxWidth);
+        descLines.forEach(line => {
+          if (yPosition < 1150) {
+            ctx.fillText(line, leftMargin, yPosition);
+            yPosition += 25;
+          }
+        });
+        yPosition += 20;
       }
-
+      
       // Características
-      if (product.short_description && yPosition < 270) {
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.text('Características:', 20, yPosition);
-        yPosition += 8;
+      if (product.short_description && yPosition < 1100) {
+        ctx.font = 'bold 24px Arial';
+        ctx.fillStyle = '#000000';
+        ctx.fillText('Características:', leftMargin, yPosition);
+        yPosition += 35;
         
-        doc.setFontSize(10);
-        doc.setTextColor(60, 60, 60);
-        const characteristicsLines = doc.splitTextToSize(product.short_description, 170);
-        doc.text(characteristicsLines, 20, yPosition);
+        ctx.font = '18px Arial';
+        ctx.fillStyle = '#333333';
+        const charLines = wrapText(ctx, product.short_description, maxWidth);
+        charLines.forEach(line => {
+          if (yPosition < 1150) {
+            ctx.fillText(line, leftMargin, yPosition);
+            yPosition += 25;
+          }
+        });
       }
-
-      // Pie de página
-      doc.setFontSize(8);
-      doc.setTextColor(150, 150, 150);
-      doc.text('Catálogo de Productos - Tintas Y Tecnología SMT', 105, 285, { align: 'center' });
-
-      // Descargar PDF
-      doc.save(`Ficha-${product.sku}.pdf`);
+      
+      // Convertir canvas a imagen y descargar
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Producto-${product.sku}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 'image/jpeg', 0.95);
+      
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Error al generar el PDF. Por favor intente nuevamente.');
+      console.error('Error generating image:', error);
+      alert('Error al generar la imagen. Por favor intente nuevamente.');
     }
+  };
+  
+  // Función auxiliar para dividir texto en líneas
+  const wrapText = (ctx, text, maxWidth) => {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = words[0];
+    
+    for (let i = 1; i < words.length; i++) {
+      const word = words[i];
+      const width = ctx.measureText(currentLine + ' ' + word).width;
+      if (width < maxWidth) {
+        currentLine += ' ' + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    lines.push(currentLine);
+    return lines;
   };
 
   if (loading) {
