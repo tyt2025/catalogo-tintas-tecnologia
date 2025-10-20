@@ -12,6 +12,7 @@ export default function App() {
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const translateCategory = (category) => {
     if (!category) return '';
@@ -318,20 +319,51 @@ export default function App() {
 
   const handleWhatsAppContact = (product) => {
     const message = `Hola, me interesa el producto:\n*${product.product_name}*\n(SKU: ${product.sku})\n\n¿Podrían darme información sobre precio y disponibilidad?`;
-    const whatsappUrl = `https://wa.me/573102605693?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/5216862504012?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleDownloadSheet = (product) => {
+    // Crear contenido de texto para la ficha técnica
+    const content = `
+FICHA TÉCNICA - TINTAS Y TECNOLOGÍA SMT
+========================================
+
+PRODUCTO: ${product.product_name}
+SKU: ${product.sku}
+${product.brand ? `MARCA: ${product.brand}` : ''}
+${product.warranty_months ? `GARANTÍA: ${product.warranty_months} meses` : ''}
+
+DESCRIPCIÓN:
+${product.description || 'No disponible'}
+
+========================================
+Tintas Y Tecnología SMT
+Catálogo de Productos
+    `.trim();
+    
+    // Crear blob y descargar
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Ficha-${product.sku}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
         <div className="text-white text-xl">Cargando productos...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-600">
+    <div className="min-h-screen bg-gradient-to-br from-red-600 to-red-800">
       <header className="bg-white/10 backdrop-blur-md shadow-lg sticky top-0 z-50">
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-4xl font-bold text-white text-center mb-2">
@@ -350,7 +382,7 @@ export default function App() {
               placeholder="Buscar por nombre, marca, descripción o código..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 rounded-full text-lg focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg"
+              className="w-full pl-12 pr-4 py-4 rounded-full text-lg focus:outline-none focus:ring-4 focus:ring-red-300 shadow-lg"
             />
           </div>
         </div>
@@ -368,7 +400,7 @@ export default function App() {
                 onClick={() => handleCategoryClick('Todas')}
                 className={`px-6 py-2 rounded-full font-medium transition-all ${
                   selectedCategory === 'Todas'
-                    ? 'bg-white text-blue-600 shadow-lg scale-105'
+                    ? 'bg-white text-red-600 shadow-lg scale-105'
                     : 'bg-white/20 text-white hover:bg-white/30'
                 }`}
               >
@@ -383,7 +415,7 @@ export default function App() {
                   onClick={() => handleCategoryClick(category.name)}
                   className={`px-6 py-2 rounded-full font-medium transition-all inline-flex items-center gap-2 ${
                     selectedCategory === category.name && !selectedSubcategory
-                      ? 'bg-white text-blue-600 shadow-lg scale-105'
+                      ? 'bg-white text-red-600 shadow-lg scale-105'
                       : 'bg-white/20 text-white hover:bg-white/30'
                   }`}
                 >
@@ -404,7 +436,7 @@ export default function App() {
                         onClick={() => handleSubcategoryClick(subcategory)}
                         className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                           selectedSubcategory === subcategory
-                            ? 'bg-blue-400 text-white shadow-md'
+                            ? 'bg-red-400 text-white shadow-md'
                             : 'bg-white/40 text-white hover:bg-white/50'
                         }`}
                       >
@@ -429,7 +461,10 @@ export default function App() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProducts.map(product => (
             <div key={product.id} className="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-2xl transition-all hover:scale-105">
-              <div className="aspect-square bg-gray-100 flex items-center justify-center p-4">
+              <div 
+                className="aspect-square bg-gray-100 flex items-center justify-center p-4 cursor-pointer hover:bg-gray-200 transition-colors"
+                onClick={() => setSelectedProduct(product)}
+              >
                 {product.image_url_png ? (
                   <img 
                     src={product.image_url_png} 
@@ -442,7 +477,7 @@ export default function App() {
               </div>
               
               <div className="p-4">
-                <div className="text-xs text-blue-600 font-semibold mb-1">
+                <div className="text-xs text-red-600 font-semibold mb-1">
                   {translateCategory(product.category)}
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
@@ -482,6 +517,90 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* Modal de detalle del producto */}
+      {selectedProduct && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={() => setSelectedProduct(null)}>
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              {/* Botón cerrar */}
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="float-right text-gray-400 hover:text-gray-600 text-3xl font-bold"
+              >
+                ×
+              </button>
+              
+              <div className="grid md:grid-cols-2 gap-6 mt-8">
+                {/* Imagen grande */}
+                <div className="flex items-center justify-center bg-gray-100 rounded-xl p-8">
+                  {selectedProduct.image_url_png ? (
+                    <img 
+                      src={selectedProduct.image_url_png} 
+                      alt={selectedProduct.product_name}
+                      className="max-w-full max-h-96 object-contain"
+                    />
+                  ) : (
+                    <Package className="w-48 h-48 text-gray-300" />
+                  )}
+                </div>
+
+                {/* Información del producto */}
+                <div className="space-y-4">
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    {selectedProduct.product_name}
+                  </h2>
+                  
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">SKU:</span> {selectedProduct.sku}
+                    </p>
+                    
+                    {selectedProduct.brand && (
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold">Marca:</span> {selectedProduct.brand}
+                      </p>
+                    )}
+                    
+                    {selectedProduct.warranty_months && (
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold">Garantía:</span> {selectedProduct.warranty_months} meses
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <h3 className="font-semibold text-lg mb-2 text-gray-900">Descripción:</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      {selectedProduct.description || 'No disponible'}
+                    </p>
+                  </div>
+
+                  {selectedProduct.short_description && (
+                    <div className="pt-4 border-t">
+                      <h3 className="font-semibold text-lg mb-2 text-gray-900">Características:</h3>
+                      <p className="text-gray-700 leading-relaxed">
+                        {selectedProduct.short_description}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Botón de descarga */}
+                  <button
+                    onClick={() => handleDownloadSheet(selectedProduct)}
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 mt-6"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Descargar Ficha Técnica
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
