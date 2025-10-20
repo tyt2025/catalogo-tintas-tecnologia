@@ -318,8 +318,8 @@ export default function App() {
   });
 
   const handleWhatsAppContact = (product) => {
-    const message = `Hola, me interesa el producto:\n*${product.product_name}*\n(SKU: ${product.sku})\n\n¿Podrían darme información sobre precio y disponibilidad?`;
-    const whatsappUrl = `https://wa.me/5216862504012?text=${encodeURIComponent(message)}`;
+    const message = `Hola, me interesa el producto:\n*${product.product_name}*\nSKU: ${product.sku}\n\nImagen: ${product.image_url_png || 'No disponible'}\n\n¿Podrían darme información sobre precio y disponibilidad?`;
+    const whatsappUrl = `https://wa.me/573102605693?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -727,9 +727,9 @@ export default function App() {
                     className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 mt-6"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Descargar Ficha Técnica
+                    Descargar Ficha
                   </button>
                 </div>
               </div>
