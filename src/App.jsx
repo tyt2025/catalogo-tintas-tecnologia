@@ -502,10 +502,14 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-red-600 to-red-800">
       <header className="bg-white/10 backdrop-blur-md shadow-lg sticky top-0 z-50">
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-4xl font-bold text-white text-center mb-2">
-            Tintas Y Tecnología SMT
-          </h1>
-          <p className="text-white/90 text-center">Catálogo de Productos</p>
+          <div className="flex flex-col items-center">
+            <img 
+              src="https://cxxifwpwarbrrodtzyqn.supabase.co/storage/v1/object/public/Logo/Logo%20Blanco.png" 
+              alt="Tintas Y Tecnología SMT"
+              className="h-16 md:h-20 mb-3 object-contain"
+            />
+            <p className="text-white/90 text-center text-lg">Catálogo de Productos</p>
+          </div>
         </div>
       </header>
 
