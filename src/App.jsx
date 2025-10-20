@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Package, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 
+// Importar jsPDF desde CDN
+const jsPDF = window.jsPDF || null;
+
 const SUPABASE_URL = 'https://cxxifwpwarbrrodtzyqn.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4eGlmd3B3YXJicnJvZHR6eXFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjc5OTAsImV4cCI6MjA3MzgwMzk5MH0.tMgoakEvw8wsvrWZpRClZo3BpiUIJ4OQrQsiM4BGM54';
 
@@ -323,35 +326,134 @@ export default function App() {
     window.open(whatsappUrl, '_blank');
   };
 
-  const handleDownloadSheet = (product) => {
-    // Crear contenido de texto para la ficha técnica
-    const content = `
-FICHA TÉCNICA - TINTAS Y TECNOLOGÍA SMT
-========================================
+  const handleDownloadSheet = async (product) => {
+    try {
+      // Cargar jsPDF si no está disponible
+      if (!window.jsPDF) {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        document.head.appendChild(script);
+        
+        await new Promise((resolve, reject) => {
+          script.onload = resolve;
+          script.onerror = reject;
+        });
+      }
 
-PRODUCTO: ${product.product_name}
-SKU: ${product.sku}
-${product.brand ? `MARCA: ${product.brand}` : ''}
-${product.warranty_months ? `GARANTÍA: ${product.warranty_months} meses` : ''}
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      let yPosition = 20;
 
-DESCRIPCIÓN:
-${product.description || 'No disponible'}
+      // Título de la empresa
+      doc.setFontSize(18);
+      doc.setTextColor(240, 0, 0); // Rojo #F00000
+      doc.text('TINTAS Y TECNOLOGÍA SMT', 105, yPosition, { align: 'center' });
+      yPosition += 10;
+      
+      doc.setFontSize(12);
+      doc.setTextColor(100, 100, 100);
+      doc.text('Ficha Técnica de Producto', 105, yPosition, { align: 'center' });
+      yPosition += 15;
 
-========================================
-Tintas Y Tecnología SMT
-Catálogo de Productos
-    `.trim();
-    
-    // Crear blob y descargar
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Ficha-${product.sku}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+      // Línea separadora
+      doc.setDrawColor(240, 0, 0);
+      doc.line(20, yPosition, 190, yPosition);
+      yPosition += 15;
+
+      // Agregar imagen si existe
+      if (product.image_url_png) {
+        try {
+          // Convertir imagen a base64
+          const response = await fetch(product.image_url_png);
+          const blob = await response.blob();
+          const reader = new FileReader();
+          
+          await new Promise((resolve) => {
+            reader.onloadend = () => {
+              const base64data = reader.result;
+              try {
+                doc.addImage(base64data, 'PNG', 70, yPosition, 70, 70);
+              } catch (e) {
+                console.log('Error adding image:', e);
+              }
+              resolve();
+            };
+            reader.readAsDataURL(blob);
+          });
+          
+          yPosition += 80;
+        } catch (error) {
+          console.log('Could not load image:', error);
+          yPosition += 10;
+        }
+      }
+
+      // Nombre del producto
+      doc.setFontSize(16);
+      doc.setTextColor(0, 0, 0);
+      const productName = doc.splitTextToSize(product.product_name, 170);
+      doc.text(productName, 20, yPosition);
+      yPosition += (productName.length * 7) + 10;
+
+      // SKU
+      doc.setFontSize(11);
+      doc.setTextColor(80, 80, 80);
+      doc.text(`SKU: ${product.sku}`, 20, yPosition);
+      yPosition += 8;
+
+      // Marca
+      if (product.brand) {
+        doc.text(`Marca: ${product.brand}`, 20, yPosition);
+        yPosition += 8;
+      }
+
+      // Garantía
+      if (product.warranty_months) {
+        doc.text(`Garantía: ${product.warranty_months} meses`, 20, yPosition);
+        yPosition += 8;
+      }
+
+      yPosition += 5;
+
+      // Descripción
+      if (product.description) {
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text('Descripción:', 20, yPosition);
+        yPosition += 8;
+        
+        doc.setFontSize(10);
+        doc.setTextColor(60, 60, 60);
+        const descriptionLines = doc.splitTextToSize(product.description, 170);
+        doc.text(descriptionLines, 20, yPosition);
+        yPosition += (descriptionLines.length * 5) + 10;
+      }
+
+      // Características
+      if (product.short_description && yPosition < 270) {
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text('Características:', 20, yPosition);
+        yPosition += 8;
+        
+        doc.setFontSize(10);
+        doc.setTextColor(60, 60, 60);
+        const characteristicsLines = doc.splitTextToSize(product.short_description, 170);
+        doc.text(characteristicsLines, 20, yPosition);
+      }
+
+      // Pie de página
+      doc.setFontSize(8);
+      doc.setTextColor(150, 150, 150);
+      doc.text('Catálogo de Productos - Tintas Y Tecnología SMT', 105, 285, { align: 'center' });
+
+      // Descargar PDF
+      doc.save(`Ficha-${product.sku}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error al generar el PDF. Por favor intente nuevamente.');
+    }
   };
 
   if (loading) {
