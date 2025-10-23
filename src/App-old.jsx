@@ -3,7 +3,7 @@ import { Search, Package, Filter, ChevronDown, ChevronUp, ShoppingCart, X, Plus,
 
 const SUPABASE_URL = 'https://cxxifwpwarbrrodtzyqn.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4eGlmd3B3YXJicnJvZHR6eXFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMjc5OTAsImV4cCI6MjA3MzgwMzk5MH0.tMgoakEvw8wsvrWZpRClZo3BpiUIJ4OQrQsiM4BGM54';
-const WHATSAPP_NUMBER = '573122405144';
+const WHATSAPP_NUMBER = '573102605693';
 
 export default function App() {
   const [products, setProducts] = useState([]);
