@@ -531,8 +531,19 @@ export default function App() {
       // Mensaje detallado para WhatsApp
       const message = `🛒 *Nueva Solicitud de Cotización*\n\n📦 *Productos a Cotizar:*\n\n${productList}\n\n📊 *Resumen:*\n• Total de productos: ${cart.length}\n• Total de unidades: ${cart.reduce((sum, item) => sum + item.cantidad, 0)}\n\n📄 _Se ha descargado un documento con imágenes de los productos. Puedes adjuntarlo para más detalles._\n\n¡Gracias por tu solicitud!`;
       
-      // Abrir WhatsApp
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+      // Crear enlace de WhatsApp compatible con móviles y escritorio
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`;
+      
+      // Detectar si es dispositivo móvil
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // En móviles, usar window.location.href para abrir la app directamente
+        window.location.href = whatsappUrl;
+      } else {
+        // En escritorio, usar window.open
+        window.open(whatsappUrl, '_blank');
+      }
 
       alert('✅ ¡Cotización lista!\n\n📥 Se descargó el JPG con imágenes\n📱 Se abrió WhatsApp con los detalles\n\n💡 Puedes adjuntar el JPG manualmente en WhatsApp si lo deseas.');
       
